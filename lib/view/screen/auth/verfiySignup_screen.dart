@@ -1,10 +1,23 @@
+import 'package:complaint/controller/auth/verfiysignup_controller.dart';
+import 'package:complaint/core/class/statusrequest.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 class VerificationPage extends StatelessWidget {
   const VerificationPage({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final args = Get.arguments;
+    if (args == null || args['id'] == null) {
+      // Get.snackbar('Error', 'معرف المستخدم غير موجود');
+      Future.delayed(Duration(seconds: 1), () => Get.back());
+      return const SizedBox();
+    }
+
+    VerfiySignUpImp controller = Get.put(VerfiySignUpImp(), permanent: true);
+    controller.id = args['id'];
+
     return Directionality(
       textDirection: TextDirection.rtl,
       child: Scaffold(
@@ -15,7 +28,6 @@ class VerificationPage extends StatelessWidget {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                // الشعار
                 Container(
                   width: 90,
                   height: 90,
@@ -31,7 +43,6 @@ class VerificationPage extends StatelessWidget {
                 ),
                 const SizedBox(height: 24),
 
-                // العنوان
                 const Text(
                   "تأكيد البريد الإلكتروني",
                   style: TextStyle(
@@ -45,21 +56,18 @@ class VerificationPage extends StatelessWidget {
                 const Text(
                   "لقد أرسلنا رمز التحقق إلى بريدك الإلكتروني.\nيرجى إدخال الرمز للمتابعة.",
                   textAlign: TextAlign.center,
-                  style: TextStyle(
-                    fontSize: 16,
-                    color: Colors.black54,
-                  ),
+                  style: TextStyle(fontSize: 16, color: Colors.black54),
                 ),
 
                 const SizedBox(height: 32),
 
-                // حقول رمز التحقق (4 خانات أو 6 حسب رغبتك)
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: List.generate(6, (index) {
                     return SizedBox(
-                      width: 45,
-                      child: TextField(
+                      width: 50,
+                      child: TextFormField(
+                        controller: controller.otpControllers[index],
                         keyboardType: TextInputType.number,
                         textAlign: TextAlign.center,
                         maxLength: 1,
@@ -69,6 +77,13 @@ class VerificationPage extends StatelessWidget {
                             borderRadius: BorderRadius.circular(12),
                           ),
                         ),
+                        onChanged: (value) {
+                          if (value.isNotEmpty && index < 5) {
+                            FocusScope.of(context).nextFocus();
+                          } else if (value.isEmpty && index > 0) {
+                            FocusScope.of(context).previousFocus();
+                          }
+                        },
                       ),
                     );
                   }),
@@ -76,30 +91,44 @@ class VerificationPage extends StatelessWidget {
 
                 const SizedBox(height: 32),
 
-                // زر تأكيد
-                SizedBox(
-                  width: double.infinity,
-                  height: 50,
-                  child: ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color(0xFF0C3C78),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
+                GetBuilder<VerfiySignUpImp>(
+                  builder: (_) {
+                    return SizedBox(
+                      width: double.infinity,
+                      height: 50,
+                      child: ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: const Color(0xFF0C3C78),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                        ),
+                        onPressed: () {
+                          controller.verfiySignUp();
+                        },
+                        child:
+                            controller.statusRequest == StatusRequest.loading
+                                ? const CircularProgressIndicator(
+                                  color: Colors.white,
+                                )
+                                : const Text(
+                                  "تأكيد الرمز",
+                                  style: TextStyle(
+                                    fontSize: 18,
+                                    color: Colors.white,
+                                  ),
+                                ),
                       ),
-                    ),
-                    onPressed: () {},
-                    child: const Text(
-                      "تأكيد الرمز",
-                      style: TextStyle(fontSize: 18, color: Colors.white),
-                    ),
-                  ),
+                    );
+                  },
                 ),
 
                 const SizedBox(height: 16),
 
-                // إعادة إرسال الرمز
                 GestureDetector(
-                  onTap: () {},
+                  onTap: () {
+                   controller. reSendCode();
+                  },
                   child: const Text(
                     "إعادة إرسال الرمز",
                     style: TextStyle(
@@ -112,10 +141,9 @@ class VerificationPage extends StatelessWidget {
 
                 const SizedBox(height: 16),
 
-                // العودة
                 TextButton(
                   onPressed: () {
-                    Navigator.pop(context);
+                    Get.back();
                   },
                   child: const Text(
                     "العودة",

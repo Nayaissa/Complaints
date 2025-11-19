@@ -1,7 +1,5 @@
 
-import 'package:complaint/core/services/services.dart';
 import 'package:dio/dio.dart' as dio;
-import 'package:get/get.dart';
 
 // late final MyServices myServices = Get.find();
 
@@ -12,7 +10,8 @@ class DioHelper {
   static void init() {
     dioClient = dio.Dio(
       dio.BaseOptions(
-        baseUrl: 'http:10.0.2.2:8000/api/',
+       baseUrl: 'http://192.168.43.104:8000/api/',
+
         connectTimeout: Duration(seconds: 50),
         validateStatus: (status) => true,
         receiveDataWhenStatusError: false,
@@ -47,7 +46,7 @@ class DioHelper {
 
       dioClient!.options.headers = {
         'Accept': 'application/json',
-        // 'Authorization': 'Bearer $token',
+         'Authorization': 'Bearer 18|dTdgvY9EhC4OrU7Wr3UET8Dig0xRHvIZsAh1lbW55cae502f',
       };
 
       return await dioClient?.get(url, queryParameters: query);
