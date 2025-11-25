@@ -1,5 +1,7 @@
 import 'package:complaint/controller/auth/login_controller.dart';
 import 'package:complaint/core/class/statusrequest.dart';
+import 'package:complaint/view/widget/auth/custom_appar_auth.dart';
+import 'package:complaint/view/widget/auth/custom_button_auth.dart';
 import 'package:complaint/view/widget/auth/customformfiled.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -22,22 +24,8 @@ class LoginPage extends StatelessWidget {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Container(
-                    width: 90,
-                    height: 90,
-                    decoration: BoxDecoration(
-                      color: const Color(0xFF0C3C78),
-                      borderRadius: BorderRadius.circular(20),
-                    ),
-                    child: const Icon(
-                      Icons.handshake_rounded,
-                      color: Colors.white,
-                      size: 48,
-                    ),
-                  ),
+                  CustomApparAuth(),
                   const SizedBox(height: 24),
-              
-                
                   const Text(
                     "نظام الشكاوي الذكي",
                     style: TextStyle(
@@ -47,13 +35,12 @@ class LoginPage extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(height: 8),
-              
                   const Text(
                     "يرجى تسجيل الدخول للمتابعة",
                     style: TextStyle(fontSize: 16, color: Colors.black54),
                   ),
                   const SizedBox(height: 32),
-              
+
                   // email
                   CustomFormFiled(
                     label: "البريد الإلكتروني",
@@ -62,13 +49,14 @@ class LoginPage extends StatelessWidget {
                     validator: (val) {
                       if (val == null || val.isEmpty)
                         return "الرجاء إدخال البريد الإلكتروني";
-                      if (!val.contains("@")) return "البريد الإلكتروني غير صالح";
+                      if (!val.contains("@"))
+                        return "البريد الإلكتروني غير صالح";
                       return null;
                     },
                   ),
-              
+
                   const SizedBox(height: 16),
-              
+
                   // password
                   GetBuilder<LoginControllerImp>(
                     builder: (_) {
@@ -88,41 +76,19 @@ class LoginPage extends StatelessWidget {
                     },
                   ),
                   const SizedBox(height: 24),
-              
+
                   GetBuilder<LoginControllerImp>(
                     builder: (controller) {
-                     
-                    return  SizedBox(
-                        width: double.infinity,
-                        height: 50,
-                        child: ElevatedButton(
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: const Color(0xFF0C3C78),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(12),
-                            ),
-                          ),
-                          onPressed: () {
-                            controller.login();
-                          },
-                          child:
-                              controller.statusRequest == StatusRequest.loading
-                                  ? const CircularProgressIndicator(
-                                    color: Colors.white,
-                                  )
-                                  : const Text(
-                                    "تسجيل الدخول",
-                                    style: TextStyle(
-                                      fontSize: 18,
-                                      color: Colors.white,
-                                    ),
-                                  ),
-                        ),
+                      return CustomButtonAuth(
+                        onPressed: () {
+                          controller.login();
+                        },
+                        label: "تسجيل الدخول",
                       );
                     },
                   ),
                   const SizedBox(height: 16),
-              
+
                   Row(
                     children: const [
                       Expanded(child: Divider(thickness: 1)),
@@ -134,25 +100,7 @@ class LoginPage extends StatelessWidget {
                     ],
                   ),
                   const SizedBox(height: 8),
-              
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      const Text("ليس لديك حساب؟ "),
-                      GestureDetector(
-                        onTap: () {
-                          controller.goTosignUp();
-                        },
-                        child: const Text(
-                          "إنشاء حساب جديد",
-                          style: TextStyle(
-                            color: Color(0xFF0C3C78),
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
+
                 ],
               ),
             ),

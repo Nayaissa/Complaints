@@ -4,15 +4,24 @@ import 'package:complaint/core/class/diohelper.dart';
 import 'package:complaint/core/localization/localChange.dart';
 import 'package:complaint/core/localization/translation.dart';
 import 'package:complaint/core/services/services.dart';
+import 'package:complaint/firebase_options.dart';
 import 'package:complaint/routes.dart';
-import 'package:complaint/view/screen/auth/login_screen.dart';
-import 'package:complaint/view/screen/home/mainhome.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  // await initalSevices();
+  await initalSevices();
+  await Firebase.initializeApp(
+      options: DefaultFirebaseOptions.currentPlatform,
+    );
+ await FirebaseMessaging.instance.requestPermission(
+    alert: true,
+    badge: true,
+    sound: true,
+  );
 DioHelper.init();
 
   runApp(const MyApp());
